@@ -1,67 +1,156 @@
 namespace advent_to_code;
 
-public class Day2Old()
+public class Day2()
 {
-    public Dictionary<string, int> numberMap = new Dictionary<string, int>{
-        {"1", 1},
-        {"2", 2}, 
-        {"3", 3}, 
-        {"4", 4}, 
-        {"5", 5}, 
-        {"6", 6}, 
-        {"7", 7}, 
-        {"8", 8}, 
-        {"9", 9}, 
-        {"one", 1}, 
-        {"two", 2}, 
-        {"three", 3}, 
-        {"four", 4}, 
-        {"five", 5}, 
-        {"six", 6}, 
-        {"seven", 7}, 
-        {"eight", 8}, 
-        {"nine", 9}
-    };
 
+    
     public int Run(List<string> inputLines)
     {
-        var codes = new List<int>();
+        var gameIDs = new List<int>();
 
         foreach (var line in inputLines)
         {
-            int number = GetValidDigitOrWordFromLine(line);  
-            codes.Add(number); 
+            var game = InitialiseGame(line);  
+            if (game.IsValid)   
+                gameIDs.Add(game.ID); 
         }
 
         var total = 0;
-        codes.ForEach(x => total+=x);
+        gameIDs.ForEach(x => total+=x);
         return total;
     }
     
-    public int GetValidDigitOrWordFromLine(string line)
+    public Game InitialiseGame(string gameInput)
     {
-        var firstIndex = line.Length;
-        var lastIndex = -1;
-        var firstNumber = "";
-        var lastNumber = "";
-        foreach (var number in numberMap.Keys)
-        {
-            var firstIndexPos = line.IndexOf(number);
-            if (firstIndexPos > -1 && firstIndexPos < firstIndex)
-            {
-                firstIndex = firstIndexPos;
-                firstNumber = number;
-            }
+        var game = new Game(gameInput);
+        game.Initialise();
+        return game;
+    }
+}
 
-            var lastIndexPos = line.LastIndexOf(number);
-            if (lastIndexPos > lastIndex)
+public class Game
+{
+
+    private string gameInput;
+    public Game (string gameInput)
+    {
+        this.gameInput = gameInput;
+    }
+    
+    public enum CubeType
+    {
+        red,
+        blue,
+        green
+    }
+    public int ID {get; private set;}
+    public bool IsValid{get;private set;}
+    public int NumberOfSets{get {return cubeSets.Count;}}
+
+    public void Initialise()
+    {
+        InitialiseGameID();
+        InitialiseGameSets();
+        InitialiseValidity();
+    }
+
+    private void InitialiseValidity()
+    {
+        //only 12 red cubes, 13 green cubes, and 14 blue cubes?
+        foreach(var cubeSet in cubeSets)
+        {
+            if (!cubeSet.IsSetValid())
             {
-                lastIndex = lastIndexPos;
-                lastNumber = number;
+                IsValid = false;
+                return;
             }
         }
+        IsValid = true;
+    }
 
-        return int.Parse(string.Format("{0}{1}", numberMap[firstNumber], numberMap[lastNumber]));
-        
+    private void InitialiseGameID()
+    {
+        var tokens1 = gameInput.Split(':');
+        ID = int.Parse(tokens1[0].Substring(5));
+    }
+
+    private void InitialiseGameSets()
+    {
+        var tokens1 = gameInput.Split(':');
+        var setTokens = tokens1[1].Split(';');
+        foreach(var set in setTokens)
+        {
+            //var cubeTokens = set.Split(',');
+            var cubeSet = new CubeSet(set);
+            cubeSets.Add(cubeSet);
+        }
+    }
+
+    List<CubeSet> cubeSets = new();
+
+    public int GetCubesInSet(int setNumber, CubeType colour)
+    {
+        var set = cubeSets[setNumber];
+        return set.GetCubeCount(colour);
+    }
+}
+
+internal class CubeSet
+{
+    internal Dictionary<Game.CubeType, int> cubes = new();
+
+    private Dictionary<Game.CubeType, int> MaxCubeCount = new()
+    {
+        {Game.CubeType.blue, 14},
+        {Game.CubeType.red, 12},
+        {Game.CubeType.green, 13},
+    };
+
+    private string cubeInput;
+    public CubeSet(string cubeInput)
+    {
+        //"Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
+        this.cubeInput = cubeInput;
+        InitialiseSet();
+    }
+
+    public int GetCubeCount(Game.CubeType colour)
+    {
+        return cubes[colour];
+    }
+
+    public bool IsSetValid()
+    {
+        foreach (var cube in cubes.Keys)
+        {
+            if (cubes[cube] > MaxCubeCount[cube])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void InitialiseSet()
+    {
+        var cubes = cubeInput.Split(',');
+        foreach (var cube in cubes)
+        {
+            AddCube(cube);
+        }
+    }
+
+    private void AddCube(string cube)
+    {
+        foreach (Game.CubeType type in Enum.GetValues(typeof(Game.CubeType)))
+        {
+            var index = cube.IndexOf(type.ToString());
+            if (index > -1)
+            {
+                var noOfCubes = cube.Substring(0, index-1);
+                cubes.Add(type, int.Parse(noOfCubes));
+                break;
+            }
+        }
     }
 }

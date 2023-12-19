@@ -4,7 +4,7 @@ using advent_to_code;
 
 namespace advent_to_code_tests;
 
-public class AdventToCodTests
+public class Day1Tests
 {
     [Fact]
     public void Test_IsValidNumberFromLine()
@@ -29,8 +29,9 @@ public class AdventToCodTests
     {
         //string line = "seven6sbmhmlkjk9clmfive5dbrgflgtbkhtkqlt";
 
-        var day2 = new Day1();
+        var day1 = new Day1();
 
-        Assert.Equal(expected, day2.GetValidDigitOrWordFromLine(line)); 
+        Assert.Equal(expected, day1.GetValidDigitOrWordFromLine(line)); 
     }
 }
+
