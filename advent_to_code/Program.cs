@@ -13,16 +13,17 @@ public class HelloWorld
         Console.WriteLine($"Day 1 Part 1 Total={day1.Run(inputLines)}");
         Console.WriteLine($"Day 1 Part 2 Total={new advent_to_code.Day1().Run(inputLines)}");
 
-        Day2 day2 = new();
         var day2Input = System.IO.File.ReadLines(@"input/day2.txt").ToList();
-        day2.Run(day2Input);
-        Console.WriteLine($"Day 2 Total={day2.Run(day2Input)}");
+        Day2 day2 = new(day2Input);
+        Console.WriteLine($"Day 2 Total={day2.GetTotalOfValidGameIDs()}");
+        Console.WriteLine($"Day 2 Powers={day2.GetPowerOFHighestCubeCount()}");
         //Console.ReadLine();
 
         /*
             Day 1 Part 1 Total=53921
             Day 1 Part 2 Total=54676
-            Day 2 Total=2795
+            Day 2 Game Total=2795
+            Day 2 Powers Total=75561
         */
 
     }

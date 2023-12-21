@@ -1,22 +1,56 @@
 namespace advent_to_code;
 
-public class Day2()
+public class Day2
 {
 
+    private List<Game> games;
+
+    public Day2()
+    {
+        games = new List<Game>();
+    }
+
+    public Day2(List<string> inputLines)
+    {
+        games = new List<Game>();
+        InitialiseGames(inputLines);
+    }
+
+    private void InitialiseGames(List<string> inputLines)
+    {
+        games = new List<Game>();
+        foreach (var line in inputLines)
+        {
+            games.Add(InitialiseGame(line)); 
+        }
+    }
     
-    public int Run(List<string> inputLines)
+    public int GetTotalOfValidGameIDs()
     {
         var gameIDs = new List<int>();
 
-        foreach (var line in inputLines)
-        {
-            var game = InitialiseGame(line);  
+        foreach (var game in games)
+        { 
             if (game.IsValid)   
                 gameIDs.Add(game.ID); 
         }
 
         var total = 0;
         gameIDs.ForEach(x => total+=x);
+        return total;
+    }
+
+    public int GetPowerOFHighestCubeCount()
+    {
+       var gamePowers = new List<int>();
+
+        foreach (var game in games)
+        {
+            gamePowers.Add(game.GetPowerOFHighestCubeCount()); 
+        }
+
+        var total = 0;
+        gamePowers.ForEach(x => total+=x);
         return total;
     }
     
@@ -93,6 +127,27 @@ public class Game
         var set = cubeSets[setNumber];
         return set.GetCubeCount(colour);
     }
+
+    public int GetPowerOFHighestCubeCount()
+    {
+        int blue = 0;
+        int red = 0;
+        int green = 0;
+        foreach (var set in cubeSets)
+        {
+            var b = set.GetCubeCount(CubeType.blue);
+            blue = b > blue ? b : blue;
+
+            var r = set.GetCubeCount(CubeType.red);
+            red = r > red ? r : red;
+
+            var g = set.GetCubeCount(CubeType.green);
+            green = g > green ? g : green;
+
+        }
+       
+        return blue*red*green;
+    }
 }
 
 internal class CubeSet
@@ -116,7 +171,10 @@ internal class CubeSet
 
     public int GetCubeCount(Game.CubeType colour)
     {
-        return cubes[colour];
+        if (cubes.ContainsKey(colour)) 
+            return cubes[colour];
+        else 
+            return 0;
     }
 
     public bool IsSetValid()
