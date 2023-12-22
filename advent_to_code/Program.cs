@@ -9,7 +9,7 @@ public class HelloWorld
     public static void Main(string[] args)
     {
         Day1Part1 day1 = new();
-        var inputLines = System.IO.File.ReadLines(@"day1_input.txt").ToList(); 
+        var inputLines = System.IO.File.ReadLines(@"input/day1.txt").ToList(); 
         Console.WriteLine($"Day 1 Part 1 Total={day1.Run(inputLines)}");
         Console.WriteLine($"Day 1 Part 2 Total={new advent_to_code.Day1().Run(inputLines)}");
 
