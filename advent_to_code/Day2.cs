@@ -5,11 +5,6 @@ public class Day2
 
     private List<Game> games;
 
-    public Day2()
-    {
-        games = new List<Game>();
-    }
-
     public Day2(List<string> inputLines)
     {
         games = new List<Game>();
@@ -54,11 +49,9 @@ public class Day2
         return total;
     }
     
-    public Game InitialiseGame(string gameInput)
+    private Game InitialiseGame(string gameInput)
     {
-        var game = new Game(gameInput);
-        game.Initialise();
-        return game;
+        return new Game(gameInput);
     }
 }
 
@@ -69,6 +62,7 @@ public class Game
     public Game (string gameInput)
     {
         this.gameInput = gameInput;
+        Initialise();
     }
     
     public enum CubeType
@@ -81,7 +75,7 @@ public class Game
     public bool IsValid{get;private set;}
     public int NumberOfSets{get {return cubeSets.Count;}}
 
-    public void Initialise()
+    private void Initialise()
     {
         InitialiseGameID();
         InitialiseGameSets();

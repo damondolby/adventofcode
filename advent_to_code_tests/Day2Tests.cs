@@ -11,9 +11,8 @@ public class Day2Tests
     [InlineData("Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red", false, 3, 3, 20, 1560)]
     public void Test_InitialiseGame(string gameInput, bool isValid, int gameID, int noOfSets, int noOfRedsInSet1, int powerOfCubes)
     {
-        var day2 = new Day2();
-        var game = day2.InitialiseGame(gameInput);
-
+        var game = new Game(gameInput);
+    
         Assert.Equal(isValid, game.IsValid);
         Assert.Equal(gameID, game.ID);
         Assert.Equal(noOfSets, game.NumberOfSets);
